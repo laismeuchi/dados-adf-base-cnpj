@@ -1,0 +1,32 @@
+{
+	"name": "ds_http_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dados_aberto_cnpj",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folder": {
+				"type": "string"
+			},
+			"file_name": {
+				"type": "string"
+			},
+			"file_extension": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@concat(dataset().folder, '/', dataset().file_name, dataset().file_extension)",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,13 @@
+{
+	"name": "ls_dados_aberto_cnpj",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://dadosabertos.rfb.gov.br/CNPJ/dados_abertos_cnpj/",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
