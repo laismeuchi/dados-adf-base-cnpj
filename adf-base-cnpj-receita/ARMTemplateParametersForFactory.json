@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-base-cnpj-receita"
+		},
+		"ls_dados_aberto_cnpj_properties_typeProperties_url": {
+			"value": "https://dadosabertos.rfb.gov.br/CNPJ/dados_abertos_cnpj/"
+		},
+		"ls_dlsbasecnpjreceita_properties_typeProperties_url": {
+			"value": "https://dlsbasecnpjreceita.dfs.core.windows.net/"
+		},
+		"ls_key_vault_properties_typeProperties_baseUrl": {
+			"value": "https://kv-basecnpjreceita.vault.azure.net/"
+		}
+	}
+}
