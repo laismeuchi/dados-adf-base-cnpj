@@ -1,0 +1,9 @@
+{
+	"name": "adf-base-cnpj-receita",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6503494c-62e3-4770-a00b-53f7a5e1244d",
+		"tenantId": "66435bee-d7f3-419a-96d4-c8d20aa3a890"
+	}
+}
