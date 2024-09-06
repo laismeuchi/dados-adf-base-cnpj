@@ -47,7 +47,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "read_files_metadata",
+						"activity": "filter_actives",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -56,7 +56,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('read_files_metadata').output.value",
+						"value": "@activity('filter_actives').output.value",
 						"type": "Expression"
 					},
 					"activities": [
@@ -162,6 +162,7 @@
 									}
 								},
 								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
 								"translator": {
 									"type": "TabularTranslator",
 									"typeConversion": true,
@@ -221,6 +222,29 @@
 				"typeProperties": {
 					"variableName": "p_folder",
 					"value": "2024-06"
+				}
+			},
+			{
+				"name": "filter_actives",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "read_files_metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('read_files_metadata').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().status,'active')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
