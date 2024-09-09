@@ -102,7 +102,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/laismeuchi@hotmail.com/dados-databricks-base-cnpj/gold/dimensoes_fixas",
+					"notebookPath": "/Users/laismeuchi@hotmail.com/dados-databricks-base-cnpj/gold/fato_abertura_empresa",
 					"baseParameters": {
 						"reference": {
 							"value": "@variables('v_reference')",
