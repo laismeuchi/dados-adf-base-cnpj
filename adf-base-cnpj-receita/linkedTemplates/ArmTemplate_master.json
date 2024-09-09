@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-base-cnpj-receita"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0909-124413-hoqwfm8b"
+		},
 		"ls_dados_aberto_cnpj_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dadosabertos.rfb.gov.br/CNPJ/dados_abertos_cnpj/"
@@ -45,6 +49,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
 					},
 					"ls_dados_aberto_cnpj_properties_typeProperties_url": {
 						"value": "[parameters('ls_dados_aberto_cnpj_properties_typeProperties_url')]"

@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-base-cnpj-receita"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0909-124413-hoqwfm8b"
+		},
 		"ls_dados_aberto_cnpj_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dadosabertos.rfb.gov.br/CNPJ/dados_abertos_cnpj/"
@@ -24,6 +28,22 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricks1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-4447308410749374.14.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/86a7f1a3-0bf0-46a1-a55f-eae28f5e036c/resourceGroups/rg-base-cnpj-receita/providers/Microsoft.Databricks/workspaces/databricks-base-cnpj",
+					"existingClusterId": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ls_dados_aberto_cnpj')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -51,6 +71,206 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipe_orchestrate_notebooks')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "bronze_to_silver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/laismeuchi@hotmail.com/dados-databricks-base-cnpj/bronze_to_silver/_executar_todos",
+							"baseParameters": {
+								"reference": {
+									"value": "@variables('v_reference')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_reference",
+							"value": "2024-08"
+						}
+					},
+					{
+						"name": "gold_dimensoes_fixas",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "bronze_to_silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/laismeuchi@hotmail.com/dados-databricks-base-cnpj/gold/dimensoes_fixas",
+							"baseParameters": {
+								"reference": {
+									"value": "@variables('v_reference')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "fato_abertura_empresa",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "gold_dimensoes_fixas",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/laismeuchi@hotmail.com/dados-databricks-base-cnpj/gold/dimensoes_fixas",
+							"baseParameters": {
+								"reference": {
+									"value": "@variables('v_reference')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "fato_abertura_mudanca_endereco",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "gold_dimensoes_fixas",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/laismeuchi@hotmail.com/dados-databricks-base-cnpj/gold/fato_mudanca_endereco",
+							"baseParameters": {
+								"reference": {
+									"value": "@variables('v_reference')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "fato_situacao_cadastral",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "gold_dimensoes_fixas",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/laismeuchi@hotmail.com/dados-databricks-base-cnpj/gold/fato_situacao_cadastral",
+							"baseParameters": {
+								"reference": {
+									"value": "@variables('v_reference')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"v_reference": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ds_http_source')]",
@@ -380,7 +600,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "read_files_metadata",
+								"activity": "filter_actives",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -389,7 +609,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('read_files_metadata').output.value",
+								"value": "@activity('filter_actives').output.value",
 								"type": "Expression"
 							},
 							"activities": [
@@ -495,6 +715,7 @@
 											}
 										},
 										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
 										"translator": {
 											"type": "TabularTranslator",
 											"typeConversion": true,
@@ -554,6 +775,29 @@
 						"typeProperties": {
 							"variableName": "p_folder",
 							"value": "2024-06"
+						}
+					},
+					{
+						"name": "filter_actives",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "read_files_metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('read_files_metadata').output.value",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@equals(item().status,'active')",
+								"type": "Expression"
+							}
 						}
 					}
 				],
