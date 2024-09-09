@@ -1,0 +1,13 @@
+{
+	"name": "AzureDatabricks1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-4447308410749374.14.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/86a7f1a3-0bf0-46a1-a55f-eae28f5e036c/resourceGroups/rg-base-cnpj-receita/providers/Microsoft.Databricks/workspaces/databricks-base-cnpj",
+			"existingClusterId": "0909-124413-hoqwfm8b"
+		}
+	}
+}
